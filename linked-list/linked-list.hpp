@@ -1,3 +1,6 @@
+#define LINKEDLIST_HPP
+
+
 #include <iostream>
 
 template <typename T>
@@ -18,6 +21,7 @@ class LinkedList {
         Node<T>* head;
         Node<T>* tail;
         int size;
+        bool checkBounds(int index);
 
     public:
 
@@ -44,7 +48,7 @@ class LinkedList {
         T getHead();
         T getTail();
         T peek(int index);
-        T& operator[](int index);
+        T operator[](int index);
         int getSize();
         void add(T value);
         void pop();
@@ -56,10 +60,16 @@ class LinkedList {
         void overwrite(int index, T value);
 };
 
+/*Check if the index passed is valid*/
+template <typename T>
+bool LinkedList<T>::checkBounds(int index) {
+    return index >= 0 && index < size;
+}
+
 /*Print the list*/
 template <typename T>
 T LinkedList<T>::getHead() {
-    if (head == nullptr) {
+    if (size == 0) {
         std::cout << "List is empty." << std::endl;
         return T();
     }
@@ -70,7 +80,7 @@ T LinkedList<T>::getHead() {
 /*Get the last element of the list*/
 template <typename T>
 T LinkedList<T>::getTail() {
-    if (tail == nullptr) {
+    if (size == 0) {
         std::cout << "List is empty." << std::endl;
         return T();
     }
@@ -81,7 +91,12 @@ T LinkedList<T>::getTail() {
 /*Get the value at a specific index*/
 template <typename T>
 T LinkedList<T>::peek(int index) {
-    if (index < 0 || index >= size) {
+    if (size == 0) {
+        std::cout << "List is empty." << std::endl;
+        return T();
+    }
+
+    if (!checkBounds(index)) {
         std::cout << "Index out of bounds." << std::endl;
         return T();
     }
@@ -95,7 +110,7 @@ T LinkedList<T>::peek(int index) {
 
 /*Overload the [] operator to access elements in the list*/
 template <typename T>
-T& LinkedList<T>::operator[](int index) {
+T LinkedList<T>::operator[](int index) {
     return peek(index);
 }
 
@@ -119,12 +134,14 @@ void LinkedList<T>::add(T value) {
     }
 
     size++;
+
+    print();
 }
 
 /*Remove item T from the end of the list*/
 template <typename T>
 void LinkedList<T>::pop() {
-    if (head == nullptr) {
+    if (size == 0) {
         std::cout << "List is empty." << std::endl;
         return;
     }
@@ -132,7 +149,7 @@ void LinkedList<T>::pop() {
     Node<T>* current = head;
     Node<T>* previous = nullptr;
 
-    while (current != nullptr) {
+    while (current -> next != nullptr) {
         previous = current;
         current = current->next;
     }
@@ -152,6 +169,8 @@ void LinkedList<T>::pop() {
     if (size < 0) {
         size = 0;
     }
+
+    print();
 }
 
 /*Invert the list*/
@@ -170,6 +189,8 @@ void LinkedList<T>::invert() {
 
     tail = head;
     head = previous;
+
+    print();
 }
 
 /*Print the list*/
@@ -192,12 +213,103 @@ void LinkedList<T>::sort() {}
 
 /*Insert item T at a specific index*/
 template <typename T>
-void LinkedList<T>::insert(int index, T value) {}
+void LinkedList<T>::insert(int index, T value) {
+    if (!checkBounds(index)) {
+        std::cout << "Index out of bounds." << std::endl;
+        return;
+    }
+
+    Node<T>* newNode = new Node<T>(value);
+
+    if (index == 0) {
+        newNode -> next = head;
+        head = newNode;
+
+        if (tail == nullptr) {
+            tail = newNode;
+        }
+
+    } else {
+        Node<T>* current = head;
+        for (int i = 0; i < index - 1; i++) {
+            current = current->next;
+        }
+
+        newNode->next = current->next;
+        current->next = newNode;
+
+        if (newNode->next == nullptr) {
+            tail = newNode;
+        }
+    }
+
+    size++;
+
+    print();
+}
 
 /*Remove item T at a specific index*/
 template <typename T>
-void LinkedList<T>::remove(int index) {}
+void LinkedList<T>::remove(int index) {
+    if (size == 0) {
+        std::cout << "List is empty." << std::endl;
+        return;
+    }
+
+    if (!checkBounds(index)) {
+        std::cout << "Index out of bounds." << std::endl;
+        return;
+    }
+
+    Node<T>* current = head;
+    Node<T>* previous = nullptr;
+
+    for (int i = 0; i < index; i++) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (previous == nullptr) {
+        head = current->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    if (current == tail) {
+        tail = previous;
+    }
+
+    delete current;
+
+    size--;
+
+    if (size < 0) {
+        size = 0;
+    }
+
+    print();
+}
 
 /*Overwrite item T at a specific index*/
 template <typename T>
-void LinkedList<T>::overwrite(int index, T value) {}
+void LinkedList<T>::overwrite(int index, T value) {
+    if (size == 0) {
+        std::cout << "List is empty." << std::endl;
+        return;
+    }
+
+    if (!checkBounds(index)) {
+        std::cout << "Index out of bounds." << std::endl;
+        return;
+    }
+
+    Node<T>* current = head;
+
+    for (int i = 0; i < index; i++) {
+        current = current->next;
+    }
+
+    current->data = value;
+
+    print();
+}
