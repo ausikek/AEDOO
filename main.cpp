@@ -1,33 +1,40 @@
-#include "stack/stack.hpp"
+#include "queue/queue.hpp"
 #include <iostream>
 
 int main() {
-    Stack<int> list;
+    Queue<int> list;
 
     std::cout << "Size: " << list.getSize() << std::endl;
 
-    list.push(1);
-    list.push(2);
-    list.push(3);
-    list.push(4);
-    list.push(5);
+    list.enqueue(1);
+    list.enqueue(2);
+    list.enqueue(3);
+    list.enqueue(4);
+    list.enqueue(5);
 
     std::cout << "Size: " << list.getSize() << std::endl;
-    std::cout << "Tail: " << list.peek() << std::endl;
+    std::cout << "First: " << list.peek() << std::endl;
 
-    list.pop();
+    list.dequeue();
+
+    std::cout << "Size: " << list.getSize() << std::endl;
+
+    list.enqueue(23);
+
+    list.enqueue(8);
+
+    list.enqueue(7);
+
+    list.enqueue(-2);
 
     std::cout << "Size: " << list.getSize() << std::endl;
 
-    list.push(23);
-
-    list.push(8);
-
-    list.push(7);
-
-    list.push(-2);
+    list.dequeue();
+    list.dequeue();
 
     std::cout << "Size: " << list.getSize() << std::endl;
+    std::cout << "First: " << list.peek() << std::endl;
+    
 
 }
 
